@@ -1,21 +1,24 @@
 const functions = require("firebase-functions");
 const axios = require("axios").default;
 const config = require("./config");
+const cors = require("cors")({ origin: true });
 
 let token = config.first_token;
 
 exports.photos = functions.https.onRequest(async (request, response) => {
-  try {
-    const photosResponse = await axios.get(
-      `https://graph.instagram.com/me/media?fields=media_url&access_token=${token}`
-    );
+  cors(request, response, async () => {
+    try {
+      const photosResponse = await axios.get(
+        `https://graph.instagram.com/me/media?fields=media_url&access_token=${token}`
+      );
 
-    response.send(photosResponse.data);
-  } catch (error) {
-    console.log(error);
+      response.send(photosResponse.data);
+    } catch (error) {
+      console.log(error);
 
-    response.send(error);
-  }
+      response.send(error);
+    }
+  });
 });
 
 exports.refreshToken = functions.pubsub
