@@ -1,8 +1,8 @@
-import { first_token } from "./token";
 const functions = require("firebase-functions");
 const axios = require("axios").default;
+const config = require("./config");
 
-let token = first_token;
+let token = config.first_token;
 
 exports.photos = functions.https.onRequest(async (request, response) => {
   try {
@@ -19,8 +19,7 @@ exports.photos = functions.https.onRequest(async (request, response) => {
 });
 
 exports.refreshToken = functions.pubsub
-  .schedule("every 5 mins")
-  //.schedule("every 480 hours")
+  .schedule("every 480 hours")
   .onRun(async (context) => {
     try {
       const refreshResponse = await axios.get(
@@ -28,6 +27,8 @@ exports.refreshToken = functions.pubsub
       );
 
       token = refreshResponse.data.access_token;
+
+      console.log("Successfully updated token", { token });
     } catch (error) {
       console.log(error);
     }
