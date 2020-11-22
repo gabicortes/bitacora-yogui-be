@@ -9,7 +9,7 @@ exports.photos = functions.https.onRequest(async (request, response) => {
   cors(request, response, async () => {
     try {
       const photosResponse = await axios.get(
-        `https://graph.instagram.com/me/media?fields=media_url&access_token=${token}`
+        `https://graph.instagram.com/me/media?fields=media_url,permalink,comments_count&access_token=${token}`
       );
 
       response.send(photosResponse.data);
